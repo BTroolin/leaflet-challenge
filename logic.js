@@ -62,8 +62,61 @@ var get_quakes = quake_data => {
     return L.layerGroup(cmarkers);
 }
 
+var make_legend = () => {
+    var info = L.control({
+        position: "bottomright"
+    });
 
+    info.onAdd = () => {
+        var infos = L.DomUtil.create("div", "legend");
+        var mags = [0, 1, 2, 3, 4, 5];
 
+        mags.forEach(mag => {
+            var mag_range = `${mag}-${mag+1}`;
+            if (mag >= 5) {mag_range = '${mag}+'}
+            var html = `<div class="legend-item">
+                    <div style="height: 30px; width: 30px; background-color:${mag_color(mag)}">
+                    <div class = legend-text>${mag_range}</div> 
+                </div>`
+            infos.innerHTML += html
+        });
+        return infos;
+    };
+    return info;
+}
+
+var get_map = map_type => {
+    var one_map = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: map_type,
+        accessToken: API_KEY
+    });
+    return one_map
+}
+
+var create_map = layer_list => {
+    var base_maps = {
+        Satellite: get_map("mapbox.satellite"),
+        Grayscale: get_map("mapbox.grayscale"),
+        Outdoors: get_map("mapbox.outdoors")
+    };
+
+    var overlay_maps = {
+        "Fault Lines": layer_list.faultlines,
+        "Earthquakes": layer_list.earthquakes
+    };
+
+    var mymap = L.map("map", {
+        center: [40, -100],
+        zoom: 5,
+        layers: [base_maps.Satellite, overlay_maps["Fault Lines"], overlay_maps["Earthquakes"]]
+    });
+
+    L.control.layers(base_maps, overlay_maps, {
+        collapsed: false
+    }).addTo(mymap);
+}
 
 
 
