@@ -116,6 +116,7 @@ var create_map = layer_list => {
     L.control.layers(base_maps, overlay_maps, {
         collapsed: false
     }).addTo(mymap);
+    make_legend().addTo(mymap);
 }
 
 
