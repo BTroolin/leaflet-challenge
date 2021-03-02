@@ -11,13 +11,13 @@ var mag_color = magnitude => {
     if (magnitude < 1) {
         return `rgba(200,255,0,${a})`
     } else if (magnitude < 2) {
-        return `rgba(211,204,0,${a})`
+        return `rgba(210,200,0,${a})`
     } else if (magnitude < 3) {
-        return `rgba(222,153,0,${a})`
+        return `rgba(220,150,0,${a})`
     } else if (magnitude < 4) {
-        return `rgba(233,102,0,${a})`
+        return `rgba(230,100,0,${a})`
     } else if (magnitude < 5) {
-        return `rgba(244,51,0,${a})`
+        return `rgba(240,50,0,${a})`
     } else {
         return `rgba(255,0,0,${a})`
     }
