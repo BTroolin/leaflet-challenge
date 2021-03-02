@@ -1,7 +1,7 @@
 // url for weekly usgs earthquake data
 //var QuakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 var quakes = "data/quakes.json";
-// url for tectonic plates borders
+// url for tectonic plates borders 
 //var PlateURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 var plates = "data/PB2002_plates.json";
 var mag_radius = mag => mag * 20000;
@@ -118,59 +118,3 @@ var create_map = layer_list => {
     }).addTo(mymap);
     make_legend().addTo(mymap);
 }
-
-
-
-
-
-
-
-
-
-
-//OSM tiles attribution and URL
-// var osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-// var osmURL = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-// var osmAttrib = '&copy; ' + osmLink;
-
-// //Carto tiles attribution and URL
-// var cartoLink = '<a href="http://cartodb.com/attributions">CartoDB</a>';
-// var cartoURL = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
-// var cartoAttrib = '&copy; ' + osmLink + ' &copy; ' + cartoLink;
-
-// //Stamen Toner tiles attribution and URL
-// var stamenURL = 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}';
-// var stamenAttrib = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-
-// //Elevation tiles attribution and URL
-// var ElevationLink = '<a href="https://www.openstreetmap.org/copyright">Elevation</a>';
-// var ElevationURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
-// var ElevationAttrib = '&copy; ' + ElevationLink;
-
-// //Creation of map tiles
-// var ElevationMap = L.tileLayer(ElevationURL, { attribution: ElevationAttrib });
-// var osmMap = L.tileLayer(osmURL, { attribution: osmAttrib });
-// var cartoMap = L.tileLayer(cartoURL, { attribution: cartoAttrib });
-// var stamenMap = L.tileLayer(stamenURL, {
-//     attribution: stamenAttrib,
-//     subdomains: 'abcd',
-//     minZoom: 0,
-//     maxZoom: 20,
-//     ext: 'png'
-// });
-
-//Map creation
-// var map = L.map('map',{
-//     layers: [osmMap]
-// }).setView([42.846787, -4.451736], 8);
-
-// //Base layers definition and addition
-// var baseLayers = {
-//     "OSM Mapnik": osmMap,
-//     "Carto DarkMatter": cartoMap,
-//     "Stamen Toner": stamenMap,
-//     "Elevation": ElevationMap
-// };
-
-//  //Add baseLayers to map as control layers
-//  L.control.layers(baseLayers).addTo(map);
