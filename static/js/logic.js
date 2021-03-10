@@ -1,53 +1,53 @@
-
-let magToRadius = mag => mag * 20000;
-
-let magToColor = magnitude => {
-    let a = 1.0;
+// scale the circle markers based on magnitude
+var magToRadius = mag => mag * 20000;
+// set marker colors based on magnitude
+var mag_colors = magnitude => {
+    var a = 1.0;
     if (magnitude < 1) {
         return `rgba(200,255,0,${a})`
     } else if (magnitude < 2) {
-        return `rgba(211,204,0,${a})`
+        return `rgba(210,200,0,${a})`
     } else if (magnitude < 3) {
-        return `rgba(222,153,0,${a})`
+        return `rgba(220,150,0,${a})`
     } else if (magnitude < 4) {
-        return `rgba(233,102,0,${a})`
+        return `rgba(230,100,0,${a})`
     } else if (magnitude < 5) {
-        return `rgba(244,51,0,${a})`
+        return `rgba(245,50,0,${a})`
     } else {
         return `rgba(255,0,0,${a})`
     }
 }
 
-// let link = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
-let link = "static/data/earthquake.geojson";
-let linktectonicplates = "static/data/PB2002_plates.json";
-
+// Import the data pulled from the USGS server
+var link = "static/data/earthquake.geojson";
+var linktectonicplates = "static/data/PB2002_plates.json";
+// put the plate and earthquake data into a layerlist
 d3.json(link, data => {
     d3.json(linktectonicplates,tpdata =>{
-        let layerList = {
-            earthquakes: getEarthquakes(data),
-            faultlines: getFaultlines(tpdata)
+        var layerList = {
+            earthquakes: get_Earthquakes(data),
+            faultlines: get_Faultlines(tpdata)
         };
         createMap(layerList);
     });
 });
-
-let getFaultlines = tpdata => {
-    let plateLines = L.geoJSON(tpdata, {
+// set how the fault lines display
+var get_Faultlines = tpdata => {
+    var plateLines = L.geoJSON(tpdata, {
         color: "yellow", 
         fillOpacity: 0
     })
     return plateLines;
 }
-
-let getEarthquakes = earthquakeData => {
-    let cmarkers = [];
+// get the quake data and assign circle marker values based on magnitude
+var get_Earthquakes = earthquakeData => {
+    var cmarkers = [];
     earthquakeData.features.forEach(feature => {
-        let crd = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-        let onemarker = L.circle(crd, {
+        var crd = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+        var onemarker = L.circle(crd, {
             stroke: false,
-            color: magToColor(feature.properties.mag),
-            fillColor: magToColor(feature.properties.mag),
+            color: mag_colors(feature.properties.mag),
+            fillColor: mag_colors(feature.properties.mag),
             fillOpacity: 1,
             radius: magToRadius(feature.properties.mag)
         });
@@ -61,21 +61,21 @@ let getEarthquakes = earthquakeData => {
 
     return L.layerGroup(cmarkers);
 }
-
-let getLegend = () => {
-    let info = L.control({
+// set up the map legend
+var get_Legend = () => {
+    var info = L.control({
         position: "bottomright"
     });
 
     info.onAdd = () => {
-        let infodiv = L.DomUtil.create("div", "legend");
-        let mags = [0, 1, 2, 3, 4, 5];
+        var infodiv = L.DomUtil.create("div", "legend");
+        var mags = [0, 1, 2, 3, 4, 5];
 
         mags.forEach(mag => {
-            let magRange = `${mag}-${mag+1}`;
+            var magRange = `${mag}-${mag+1}`;
             if (mag >= 5) { magRange = `${mag}+`}
-            let html = `<div class="legend-item">
-                    <div style="height: 25px; width: 25px; background-color:${magToColor(mag)}"> </div>
+            var html = `<div class="legend-item">
+                    <div style="height: 25px; width: 25px; background-color:${mag_colors(mag)}"> </div>
                     <div class=legend-text>${magRange}</div>
                 </div>`
             infodiv.innerHTML += html
@@ -85,9 +85,9 @@ let getLegend = () => {
 
     return info;
 }
-
-let getMap = maptype => {
-    let onemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+//make the map with mapbox tilesets
+var getMap = maptype => {
+    var onemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
         id: maptype,
@@ -95,22 +95,22 @@ let getMap = maptype => {
     });
     return onemap;
 }
-
-let createMap = layerList => {
-    let baseMaps = {
+// add basemap options and overlays
+var createMap = layerList => {
+    var baseMaps = {
         Satellite: getMap("mapbox.satellite"),
         Countries: getMap("mapbox.country-boundaries-v1"),
         Streets: getMap("mapbox.mapbox-streets-v8")
     };
 
-    let overlayMaps = {
+    var overlayMaps = {
         "Fault Lines": layerList.faultlines,
         Earthquakes: layerList.earthquakes
     };
-
-    let myMap = L.map("map", {
-        center: [40, -100],
-        zoom: 5,
+    // set the starting zoom and center to show quakes in North America
+    var myMap = L.map("map", {
+        center: [40, -110],
+        zoom: 4,
         layers: [baseMaps.Satellite,overlayMaps["Fault Lines"], overlayMaps.Earthquakes]
     });
 
@@ -118,5 +118,5 @@ let createMap = layerList => {
         collapsed: false
     }).addTo(myMap);
 
-    getLegend().addTo(myMap);
+    get_Legend().addTo(myMap);
 }
